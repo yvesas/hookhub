@@ -1,0 +1,62 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
+  <div class="max-w-md w-full text-center">
+    <div class="mb-8">
+      <h1 class="text-9xl font-bold text-indigo-600 dark:text-indigo-400">404</h1>
+      <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mt-4">
+        Page Not Found
+      </p>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <a
+        href="/dashboard"
+        class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors w-full"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        Go to Dashboard
+      </a>
+
+      <div class="grid grid-cols-3 gap-2">
+        <a
+          href="/dashboard"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          Events
+        </a>
+        <a
+          href="/dashboard/api-keys"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          API Keys
+        </a>
+        <a
+          href="/dashboard/analytics"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          Analytics
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-8">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Error Code: 404 | HookHub
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Apply dark mode if set
+  (function() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>

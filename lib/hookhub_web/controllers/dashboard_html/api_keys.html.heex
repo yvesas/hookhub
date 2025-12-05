@@ -1,0 +1,329 @@
+<div id="app" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+  <nav class="bg-white dark:bg-gray-800 shadow-sm transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <div class="flex-shrink-0 flex items-center">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HookHub</h1>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a
+              href="/dashboard"
+              class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            >
+              Events
+            </a>
+            <a
+              href="/dashboard/api-keys"
+              class="border-indigo-500 text-gray-900 dark:text-gray-100 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            >
+              API Keys
+            </a>
+            <a
+              href="/dashboard/analytics"
+              class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            >
+              Analytics
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <button
+            onclick="toggleTheme()"
+            class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            title="Toggle theme"
+          >
+            <svg id="theme-icon-light" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg id="theme-icon-dark" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">API Keys</h2>
+        <button
+          onclick="showCreateModal()"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          + Create API Key
+        </button>
+      </div>
+
+      <!-- API Keys List -->
+      <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md transition-colors duration-200">
+        <%= if Enum.empty?(@api_keys) do %>
+          <div class="text-center py-12">
+            <p class="text-gray-500">No API keys found</p>
+            <button
+              onclick="showCreateModal()"
+              class="mt-4 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            >
+              Create your first API key
+            </button>
+          </div>
+        <% else %>
+          <ul role="list" class="divide-y divide-gray-200">
+            <%= for api_key <- @api_keys do %>
+              <li class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-3">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        <%= api_key.provider.name %>
+                      </span>
+                      <%= if api_key.is_active do %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      <% else %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          Revoked
+                        </span>
+                      <% end %>
+                    </div>
+                    <div class="mt-2">
+                      <p class="text-sm font-medium text-gray-900">
+                        <%= api_key.name || "Unnamed Key" %>
+                      </p>
+                      <p class="mt-1 text-sm text-gray-600 font-mono">
+                        <%= api_key.key_prefix %>
+                      </p>
+                    </div>
+                    <div class="mt-2 flex items-center text-sm text-gray-500">
+                      <span>Created: <%= format_datetime(api_key.inserted_at) %></span>
+                      <%= if api_key.revoked_at do %>
+                        <span class="mx-2">•</span>
+                        <span>Revoked: <%= format_datetime(api_key.revoked_at) %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div>
+                    <%= if api_key.is_active do %>
+                      <button
+                        onclick={"revokeKey('#{api_key.id}', '#{api_key.name}')"}
+                        class="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                      >
+                        Revoke
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Create API Key Modal -->
+<div id="createModal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+    <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
+          Create New API Key
+        </h3>
+        <form id="createForm" onsubmit="createKey(event)">
+          <div class="mb-4">
+            <label for="provider_id" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+              Provider
+            </label>
+            <select
+              id="provider_id"
+              name="provider_id"
+              required
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="">Select a provider</option>
+              <%= for provider <- @providers do %>
+                <option value={provider.id}><%= provider.name %></option>
+              <% end %>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="key_name" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+              Key Name (optional)
+            </label>
+            <input
+              type="text"
+              id="key_name"
+              name="name"
+              placeholder="e.g., Production Key"
+              class="mt-1 block w-full text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:placeholder-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+            <button
+              type="submit"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
+            >
+              Create
+            </button>
+            <button
+              type="button"
+              onclick="hideCreateModal()"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Success Modal (for showing new API key) -->
+<div id="successModal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+    <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+      <div>
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+          <svg
+            class="h-6 w-6 text-green-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <div class="mt-3 text-center sm:mt-5">
+          <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+            API Key Created Successfully!
+          </h3>
+          <div class="mt-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              Save this key now. You won't be able to see it again!
+            </p>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
+              <code id="newApiKey" class="text-sm font-mono break-all text-gray-900 dark:text-gray-100"></code>
+            </div>
+            <button
+              onclick="copyApiKey()"
+              class="mt-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              Copy to Clipboard
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-5 sm:mt-6">
+        <button
+          type="button"
+          onclick="window.location.reload()"
+          class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showCreateModal() {
+    document.getElementById('createModal').classList.remove('hidden');
+  }
+
+  function hideCreateModal() {
+    document.getElementById('createModal').classList.add('hidden');
+  }
+
+  async function createKey(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/keys', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          provider_id: formData.get('provider_id'),
+          name: formData.get('name') || 'API Key'
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById('newApiKey').textContent = data.data.key;
+        hideCreateModal();
+        document.getElementById('successModal').classList.remove('hidden');
+      } else {
+        alert('Error creating API key: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error creating API key: ' + error.message);
+    }
+  }
+
+  async function revokeKey(id, name) {
+    if (!confirm(`Are you sure you want to revoke "${name}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/keys/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        alert('Error revoking API key');
+      }
+    } catch (error) {
+      alert('Error revoking API key: ' + error.message);
+    }
+  }
+
+  function copyApiKey() {
+    const key = document.getElementById('newApiKey').textContent;
+    navigator.clipboard.writeText(key).then(() => {
+      alert('API key copied to clipboard!');
+    });
+  }
+
+  // Dark mode toggle
+  function toggleTheme() {
+    const html = document.documentElement;
+    if (html.classList.contains('dark')) {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Initialize theme on page load
+  (function() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>

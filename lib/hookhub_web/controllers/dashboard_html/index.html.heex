@@ -1,0 +1,300 @@
+<div id="app" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+  <nav class="bg-white dark:bg-gray-800 shadow-sm transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <div class="flex-shrink-0 flex items-center">
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">HookHub</h1>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a
+              href="/dashboard"
+              class="border-indigo-500 text-gray-900 dark:text-gray-100 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            >
+              Events
+            </a>
+            <a
+              href="/dashboard/api-keys"
+              class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            >
+              API Keys
+            </a>
+            <a
+              href="/dashboard/analytics"
+              class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            >
+              Analytics
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <button
+            onclick="toggleTheme()"
+            class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            title="Toggle theme"
+          >
+            <svg id="theme-icon-light" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg id="theme-icon-dark" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Event History</h2>
+      </div><!-- Filters -->
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6 transition-colors duration-200">
+        <form method="get" action="/dashboard" class="grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div>
+            <label for="provider_id" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+              Provider
+            </label>
+            <select
+              id="provider_id"
+              name="provider_id"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="">All Providers</option>
+              <%= for provider <- @providers do %>
+                <option
+                  value={provider.id}
+                  selected={@filters.provider_id == provider.id}
+                >
+                  <%= provider.name %>
+                </option>
+              <% end %>
+            </select>
+          </div>
+
+          <div>
+            <label for="event_type" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+              Event Type
+            </label>
+            <input
+              type="text"
+              id="event_type"
+              name="event_type"
+              value={@filters.event_type}
+              placeholder="e.g., message.inbound"
+              class="mt-1 block w-full text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:placeholder-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label for="start_date" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+              Start Date
+            </label>
+            <input
+              type="date"
+              id="start_date"
+              name="start_date"
+              value={@filters.start_date}
+              class="mt-1 block w-full text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div>
+            <label for="end_date" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+              End Date
+            </label>
+            <input
+              type="date"
+              id="end_date"
+              name="end_date"
+              value={@filters.end_date}
+              class="mt-1 block w-full text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+
+          <div class="sm:col-span-4 flex justify-end space-x-3">
+            <a
+              href="/dashboard"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Clear
+            </a>
+            <button
+              type="submit"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Apply Filters
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Events List -->
+      <div class="bg-white shadow overflow-hidden sm:rounded-md">
+        <%= if Enum.empty?(@events) do %>
+          <div class="text-center py-12">
+            <p class="text-gray-500">No events found</p>
+          </div>
+        <% else %>
+          <ul role="list" class="divide-y divide-gray-200">
+            <%= for event <- @events do %>
+              <li>
+                <div class="px-4 py-4 sm:px-6 hover:bg-gray-50">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center space-x-3">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                          <%= event.provider.name %>
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          <%= event.event_type %>
+                        </span>
+                      </div>
+                      <div class="mt-2">
+                        <p class="text-sm font-medium text-gray-900">
+                          <%= event.sender_name || event.sender_id %>
+                          →
+                          <%= event.recipient_name || event.recipient_id %>
+                        </p>
+                        <p class="mt-1 text-sm text-gray-600">
+                          <%= truncate(event.message_body, 100) %>
+                        </p>
+                      </div>
+                      <div class="mt-2 flex items-center text-sm text-gray-500">
+                        <span><%= format_datetime(event.timestamp) %></span>
+                        <span class="mx-2">•</span>
+                        <span class="text-xs text-gray-400">
+                          ID: <%= String.slice(event.id, 0, 8) %>...
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        onclick={"toggleDetails('event-#{event.id}')"}
+                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Details
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Event Details (Hidden by default) -->
+                  <div id={"event-#{event.id}"} class="hidden mt-4 border-t border-gray-200 pt-4">
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                      <div>
+                        <dt class="text-sm font-medium text-gray-500">External Event ID</dt>
+                        <dd class="mt-1 text-sm text-gray-900"><%= event.external_event_id %></dd>
+                      </div>
+                      <div>
+                        <dt class="text-sm font-medium text-gray-500">Platform</dt>
+                        <dd class="mt-1 text-sm text-gray-900"><%= event.platform || "-" %></dd>
+                      </div>
+                      <div>
+                        <dt class="text-sm font-medium text-gray-500">Message Type</dt>
+                        <dd class="mt-1 text-sm text-gray-900"><%= event.message_type || "-" %></dd>
+                      </div>
+                      <div>
+                        <dt class="text-sm font-medium text-gray-500">Inserted At</dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                          <%= format_datetime(event.inserted_at) %>
+                        </dd>
+                      </div>
+                      <div class="sm:col-span-2">
+                        <dt class="text-sm font-medium text-gray-500">Raw Payload</dt>
+                        <dd class="mt-1">
+                          <pre class="text-xs bg-gray-50 p-3 rounded overflow-x-auto"><%= Jason.encode!(event.raw_payload, pretty: true) %></pre>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+
+          <!-- Pagination -->
+          <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div class="flex-1 flex justify-between sm:hidden">
+              <%= if @pagination.page > 1 do %>
+                <a
+                  href={"?page=#{@pagination.page - 1}"}
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Previous
+                </a>
+              <% end %>
+              <%= if @pagination.page < @pagination.total_pages do %>
+                <a
+                  href={"?page=#{@pagination.page + 1}"}
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Next
+                </a>
+              <% end %>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700">
+                  Showing page
+                  <span class="font-medium"><%= @pagination.page %></span>
+                  of
+                  <span class="font-medium"><%= @pagination.total_pages %></span>
+                  (<span class="font-medium"><%= @pagination.total %></span>
+                  total events)
+                </p>
+              </div>
+              <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                  <%= if @pagination.page > 1 do %>
+                    <a
+                      href={"?page=#{@pagination.page - 1}"}
+                      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    >
+                      Previous
+                    </a>
+                  <% end %>
+                  <%= if @pagination.page < @pagination.total_pages do %>
+                    <a
+                      href={"?page=#{@pagination.page + 1}"}
+                      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    >
+                      Next
+                    </a>
+                  <% end %>
+                </nav>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleDetails(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle('hidden');
+  }
+
+  // Dark mode toggle
+  function toggleTheme() {
+    const html = document.documentElement;
+    if (html.classList.contains('dark')) {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Initialize theme on page load
+  (function() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>
