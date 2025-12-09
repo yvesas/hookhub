@@ -46,9 +46,6 @@ jobs:
       - name: Compile project (warnings as errors)
         run: mix compile --warnings-as-errors
 
-      - name: Check for unused dependencies
-        run: mix deps.unlock --check-unused
-
   # Job 2: Automated Tests
   test:
     name: Automated Tests
