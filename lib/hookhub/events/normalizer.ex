@@ -63,7 +63,8 @@ defmodule Hookhub.Events.Normalizer do
        sender_name: get_in(payload, ["payload", "from_name"]),
        recipient_id: get_in(payload, ["payload", "to"]),
        recipient_name: nil,
-       message_type: get_in(payload, ["payload", "message", "format"]) |> normalize_message_type(),
+       message_type:
+         get_in(payload, ["payload", "message", "format"]) |> normalize_message_type(),
        message_body: get_in(payload, ["payload", "message", "text"]),
        platform: get_in(payload, ["payload", "platform"]),
        raw_payload: payload

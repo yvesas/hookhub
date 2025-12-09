@@ -33,11 +33,33 @@
             class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             title="Toggle theme"
           >
-            <svg id="theme-icon-light" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg
+              id="theme-icon-light"
+              class="h-6 w-6 hidden dark:block"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
             </svg>
-            <svg id="theme-icon-dark" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <svg
+              id="theme-icon-dark"
+              class="h-6 w-6 block dark:hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
             </svg>
           </button>
         </div>
@@ -49,11 +71,15 @@
     <div class="px-4 py-6 sm:px-0">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Event History</h2>
-      </div><!-- Filters -->
+      </div>
+      <!-- Filters -->
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6 transition-colors duration-200">
         <form method="get" action="/dashboard" class="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <div>
-            <label for="provider_id" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+            <label
+              for="provider_id"
+              class="block text-sm font-medium text-gray-900 dark:text-gray-200"
+            >
               Provider
             </label>
             <select
@@ -63,18 +89,18 @@
             >
               <option value="">All Providers</option>
               <%= for provider <- @providers do %>
-                <option
-                  value={provider.id}
-                  selected={@filters.provider_id == provider.id}
-                >
-                  <%= provider.name %>
+                <option value={provider.id} selected={@filters.provider_id == provider.id}>
+                  {provider.name}
                 </option>
               <% end %>
             </select>
           </div>
 
           <div>
-            <label for="event_type" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+            <label
+              for="event_type"
+              class="block text-sm font-medium text-gray-900 dark:text-gray-200"
+            >
               Event Type
             </label>
             <input
@@ -88,7 +114,10 @@
           </div>
 
           <div>
-            <label for="start_date" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+            <label
+              for="start_date"
+              class="block text-sm font-medium text-gray-900 dark:text-gray-200"
+            >
               Start Date
             </label>
             <input
@@ -101,7 +130,10 @@
           </div>
 
           <div>
-            <label for="end_date" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+            <label
+              for="end_date"
+              class="block text-sm font-medium text-gray-900 dark:text-gray-200"
+            >
               End Date
             </label>
             <input
@@ -129,8 +161,8 @@
           </div>
         </form>
       </div>
-
-      <!-- Events List -->
+      
+<!-- Events List -->
       <div class="bg-white shadow overflow-hidden sm:rounded-md">
         <%= if Enum.empty?(@events) do %>
           <div class="text-center py-12">
@@ -145,27 +177,26 @@
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center space-x-3">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                          <%= event.provider.name %>
+                          {event.provider.name}
                         </span>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                          <%= event.event_type %>
+                          {event.event_type}
                         </span>
                       </div>
                       <div class="mt-2">
                         <p class="text-sm font-medium text-gray-900">
-                          <%= event.sender_name || event.sender_id %>
-                          →
-                          <%= event.recipient_name || event.recipient_id %>
+                          {event.sender_name || event.sender_id} → {event.recipient_name ||
+                            event.recipient_id}
                         </p>
                         <p class="mt-1 text-sm text-gray-600">
-                          <%= truncate(event.message_body, 100) %>
+                          {truncate(event.message_body, 100)}
                         </p>
                       </div>
                       <div class="mt-2 flex items-center text-sm text-gray-500">
-                        <span><%= format_datetime(event.timestamp) %></span>
+                        <span>{format_datetime(event.timestamp)}</span>
                         <span class="mx-2">•</span>
                         <span class="text-xs text-gray-400">
-                          ID: <%= String.slice(event.id, 0, 8) %>...
+                          ID: {String.slice(event.id, 0, 8)}...
                         </span>
                       </div>
                     </div>
@@ -178,26 +209,26 @@
                       </button>
                     </div>
                   </div>
-
-                  <!-- Event Details (Hidden by default) -->
+                  
+<!-- Event Details (Hidden by default) -->
                   <div id={"event-#{event.id}"} class="hidden mt-4 border-t border-gray-200 pt-4">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                       <div>
                         <dt class="text-sm font-medium text-gray-500">External Event ID</dt>
-                        <dd class="mt-1 text-sm text-gray-900"><%= event.external_event_id %></dd>
+                        <dd class="mt-1 text-sm text-gray-900">{event.external_event_id}</dd>
                       </div>
                       <div>
                         <dt class="text-sm font-medium text-gray-500">Platform</dt>
-                        <dd class="mt-1 text-sm text-gray-900"><%= event.platform || "-" %></dd>
+                        <dd class="mt-1 text-sm text-gray-900">{event.platform || "-"}</dd>
                       </div>
                       <div>
                         <dt class="text-sm font-medium text-gray-500">Message Type</dt>
-                        <dd class="mt-1 text-sm text-gray-900"><%= event.message_type || "-" %></dd>
+                        <dd class="mt-1 text-sm text-gray-900">{event.message_type || "-"}</dd>
                       </div>
                       <div>
                         <dt class="text-sm font-medium text-gray-500">Inserted At</dt>
                         <dd class="mt-1 text-sm text-gray-900">
-                          <%= format_datetime(event.inserted_at) %>
+                          {format_datetime(event.inserted_at)}
                         </dd>
                       </div>
                       <div class="sm:col-span-2">
@@ -212,8 +243,8 @@
               </li>
             <% end %>
           </ul>
-
-          <!-- Pagination -->
+          
+<!-- Pagination -->
           <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div class="flex-1 flex justify-between sm:hidden">
               <%= if @pagination.page > 1 do %>
@@ -236,12 +267,9 @@
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
                 <p class="text-sm text-gray-700">
-                  Showing page
-                  <span class="font-medium"><%= @pagination.page %></span>
-                  of
-                  <span class="font-medium"><%= @pagination.total_pages %></span>
-                  (<span class="font-medium"><%= @pagination.total %></span>
-                  total events)
+                  Showing page <span class="font-medium">{@pagination.page}</span>
+                  of <span class="font-medium">{@pagination.total_pages}</span>
+                  (<span class="font-medium"><%= @pagination.total %></span> total events)
                 </p>
               </div>
               <div>

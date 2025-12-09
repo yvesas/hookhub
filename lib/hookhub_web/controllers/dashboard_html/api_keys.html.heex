@@ -33,11 +33,33 @@
             class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             title="Toggle theme"
           >
-            <svg id="theme-icon-light" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg
+              id="theme-icon-light"
+              class="h-6 w-6 hidden dark:block"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
             </svg>
-            <svg id="theme-icon-dark" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <svg
+              id="theme-icon-dark"
+              class="h-6 w-6 block dark:hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
             </svg>
           </button>
         </div>
@@ -56,8 +78,8 @@
           + Create API Key
         </button>
       </div>
-
-      <!-- API Keys List -->
+      
+<!-- API Keys List -->
       <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md transition-colors duration-200">
         <%= if Enum.empty?(@api_keys) do %>
           <div class="text-center py-12">
@@ -77,7 +99,7 @@
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center space-x-3">
                       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                        <%= api_key.provider.name %>
+                        {api_key.provider.name}
                       </span>
                       <%= if api_key.is_active do %>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -91,17 +113,17 @@
                     </div>
                     <div class="mt-2">
                       <p class="text-sm font-medium text-gray-900">
-                        <%= api_key.name || "Unnamed Key" %>
+                        {api_key.name || "Unnamed Key"}
                       </p>
                       <p class="mt-1 text-sm text-gray-600 font-mono">
-                        <%= api_key.key_prefix %>
+                        {api_key.key_prefix}
                       </p>
                     </div>
                     <div class="mt-2 flex items-center text-sm text-gray-500">
-                      <span>Created: <%= format_datetime(api_key.inserted_at) %></span>
+                      <span>Created: {format_datetime(api_key.inserted_at)}</span>
                       <%= if api_key.revoked_at do %>
                         <span class="mx-2">•</span>
-                        <span>Revoked: <%= format_datetime(api_key.revoked_at) %></span>
+                        <span>Revoked: {format_datetime(api_key.revoked_at)}</span>
                       <% end %>
                     </div>
                   </div>
@@ -136,7 +158,10 @@
         </h3>
         <form id="createForm" onsubmit="createKey(event)">
           <div class="mb-4">
-            <label for="provider_id" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+            <label
+              for="provider_id"
+              class="block text-sm font-medium text-gray-900 dark:text-gray-200"
+            >
               Provider
             </label>
             <select
@@ -147,13 +172,16 @@
             >
               <option value="">Select a provider</option>
               <%= for provider <- @providers do %>
-                <option value={provider.id}><%= provider.name %></option>
+                <option value={provider.id}>{provider.name}</option>
               <% end %>
             </select>
           </div>
 
           <div class="mb-4">
-            <label for="key_name" class="block text-sm font-medium text-gray-900 dark:text-gray-200">
+            <label
+              for="key_name"
+              class="block text-sm font-medium text-gray-900 dark:text-gray-200"
+            >
               Key Name (optional)
             </label>
             <input
@@ -216,7 +244,11 @@
               Save this key now. You won't be able to see it again!
             </p>
             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
-              <code id="newApiKey" class="text-sm font-mono break-all text-gray-900 dark:text-gray-100"></code>
+              <code
+                id="newApiKey"
+                class="text-sm font-mono break-all text-gray-900 dark:text-gray-100"
+              >
+              </code>
             </div>
             <button
               onclick="copyApiKey()"

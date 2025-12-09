@@ -29,8 +29,9 @@ defmodule Hookhub.Repo.Migrations.CreateEvents do
     end
 
     # Idempotency constraint: prevent duplicate events from same provider
-    create unique_index(:events, [:provider_id, :external_event_id], 
-      name: :events_provider_external_id_unique)
+    create unique_index(:events, [:provider_id, :external_event_id],
+             name: :events_provider_external_id_unique
+           )
 
     # Performance indexes
     create index(:events, [:provider_id])

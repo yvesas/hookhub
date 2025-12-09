@@ -51,7 +51,7 @@ defmodule Hookhub.Providers.ApiKey do
   Generates a random API key with format: hh_live_<random_string>
   """
   def generate_api_key do
-    random_part = 
+    random_part =
       :crypto.strong_rand_bytes(32)
       |> Base.encode64(padding: false)
       |> String.replace(~r/[^a-zA-Z0-9]/, "")

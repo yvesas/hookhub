@@ -54,6 +54,7 @@ defmodule HookhubWeb.Plugs.ApiKeyAuth do
     case get_req_header(conn, "x-api-key") do
       [key | _] when is_binary(key) and byte_size(key) > 0 ->
         {:ok, key}
+
       _ ->
         {:error, :missing_key}
     end
@@ -75,7 +76,7 @@ defmodule HookhubWeb.Plugs.ApiKeyAuth do
             {:error, :inactive_key}
 
           key_record.expires_at != nil and
-            DateTime.compare(key_record.expires_at, DateTime.utc_now()) == :lt ->
+              DateTime.compare(key_record.expires_at, DateTime.utc_now()) == :lt ->
             {:error, :expired_key}
 
           true ->
