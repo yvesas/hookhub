@@ -2,7 +2,8 @@
 
 defmodule TrafficSimulator do
   alias Hookhub.Repo
-  alias Hookhub.Events.{Provider, ApiKey}
+  alias Hookhub.Providers.Provider
+  alias Hookhub.Providers.ApiKey
   import Ecto.Query
 
   def run do
@@ -25,9 +26,9 @@ defmodule TrafficSimulator do
           Repo.insert(%ApiKey{
             provider_id: provider.id,
             key_hash: hash,
+            key_prefix: "sk_sim",
             name: "Simulation Key - #{DateTime.utc_now()}",
             is_active: true
-            # Depending on schema, might need other fields
           })
 
         IO.puts("   👉 Created key for #{provider.name}: #{raw_key}")
