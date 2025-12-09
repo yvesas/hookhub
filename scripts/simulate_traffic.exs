@@ -86,9 +86,9 @@ defmodule TrafficSimulator do
 
     if String.contains?(String.downcase(provider_name), "messageflow") do
       %{
-        id: "evt_#{id}",
-        type: "message.inbound",
-        created_at: DateTime.utc_now() |> DateTime.to_iso8601(),
+        event_id: "evt_#{id}",
+        event_type: "message.inbound",
+        timestamp: DateTime.utc_now() |> DateTime.to_iso8601(),
         data: %{
           sender: %{id: "usr_#{Enum.random(1..1000)}", name: "Simulated User"},
           recipient: %{id: "usr_support"},
@@ -97,11 +97,19 @@ defmodule TrafficSimulator do
       }
     else
       %{
-        messageId: "msg-#{id}",
-        messageType: "text",
-        timestamp: System.system_time(:second),
-        sender: %{id: "u_#{Enum.random(1..1000)}"},
-        content: "Simulation chat #{id}"
+        id: "cr-#{id}",
+        type: "INCOMING_MESSAGE",
+        created_at: System.system_time(:second),
+        payload: %{
+          platform: "WHATSAPP",
+          from: "+5511#{Enum.random(900_000_000..999_999_999)}",
+          from_name: "Simulated User",
+          to: "+5511888888888",
+          message: %{
+            format: "TEXT",
+            text: "Simulation chat #{id}"
+          }
+        }
       }
     end
   end
