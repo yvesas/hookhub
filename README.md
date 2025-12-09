@@ -360,7 +360,42 @@ curl http://localhost:4000/api/events | jq
 
 **Veja guia completo em:** [TESTING.md](TESTING.md)
 
-## 📚 Documentação
+## � Simulação de Tráfego
+
+Para validar o funcionamento do sistema com tráfego realista, incluímos um script de simulação que:
+1. Gera chaves de API temporárias ("Simulation Key") para cada provedor.
+2. Envia webhooks contínuos (MessageFlow e ChatRelay) para `http://localhost:4000`.
+3. Exibe o status de cada requisição em tempo real.
+
+### Executando a Simulação
+
+Certifique-se de que a aplicação está rodando (via Docker ou `./dev.sh`) e execute:
+
+```bash
+# Opção 1: Via mix alias (recomendado)
+mix simulate
+
+# Opção 2: Executar o script diretamente
+mix run scripts/simulate_traffic.exs
+```
+
+**Exemplo de saída:**
+```
+🚀 Starting Traffic Simulation (Elixir)...
+🔑 Creating Helper Simulation Keys...
+   👉 Created key for MessageFlow: sk_sim_a1b2c3d4
+   👉 Created key for ChatRelay: sk_sim_e5f6g7h8
+
+📡 Sending webhooks... (Press Ctrl+C to stop)
+
+✅ [14:35:22] MessageFlow -> 201
+✅ [14:35:23] ChatRelay -> 201
+✅ [14:35:24] MessageFlow -> 201
+```
+
+*Para parar a simulação, pressione `Ctrl+C`.*
+
+## �📚 Documentação
 
 - **[API_EXAMPLES.md](API_EXAMPLES.md)** - Exemplos completos de uso da API
 - **[TESTING.md](TESTING.md)** - Guia de testes e validação

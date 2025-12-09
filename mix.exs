@@ -91,7 +91,8 @@ defmodule Hookhub.MixProject do
         "esbuild hookhub --minify",
         "phx.digest"
       ],
-      precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"]
+      precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"],
+      simulate: ["run scripts/simulate_traffic.exs"]
     ]
   end
 end
